@@ -46,6 +46,12 @@ def addDatabase(data,db):
     id = data['plane'] + ":" + data['flyTime']
     doc_ref = db.collection(path).document(id)
     doc_ref.set(data)
+
+    targetPath = "searchResult"
+    exist = db.collection(targetPath).document(data['target'])
+    exist.set({
+        'exist' : True
+    })
     
 def getPlane(plan):
     plane = plan.select("span.gws-flights__ellipsize span span")[0].text
@@ -73,15 +79,34 @@ def initDatabase():
     db = firestore.client()
     return db
 
+def SearchQuery():
+    path = "user"
+    docs = db.collection(path).get()
+    i = 0
+    for doc in docs:
+        queryPath = "user/" + doc.id + "/query"
+        querys = db.collection(queryPath).get()
+        print (doc.id)
+        for query in querys:
+            date = query.get("date")
+            ori = query.get("ori")
+            dst = query.get("dst")
+            target = ori + dst + date 
+
+            print (target)
+
+            soup = getPageSource(ori,dst,date)
+            getData(soup,target,db)
+
 if __name__ == '__main__': 
-    # res = requests.get('https://www.google.com/flights?hl=zh-TW#flt=TPE.GUM.2019-06-25*GUM.TPE.2019-06-29;c:TWD;e:1;sd:1;t:f')
     db = initDatabase()
-    ori = "TPE"
-    dst = "KUL"
-    date = "2019-07-10"
-    target = ori + dst + date 
-    soup = getPageSource(ori,dst,date)
-    getData(soup,target,db)
+    # ori = "TPE"
+    # dst = "KUL"
+    # date = "2019-07-11"
+    # target = ori + dst + date 
+    # soup = getPageSource(ori,dst,date)
+    # getData(soup,target,db)
+    SearchQuery()
 
 
     
