@@ -80,23 +80,20 @@ def initDatabase():
     return db
 
 def SearchQuery():
-    path = "user"
-    docs = db.collection(path).get()
+    path = "query"
+    querys = db.collection(path).get()
     i = 0
-    for doc in docs:
-        queryPath = "user/" + doc.id + "/query"
-        querys = db.collection(queryPath).get()
-        print (doc.id)
-        for query in querys:
-            date = query.get("date")
-            ori = query.get("ori")
-            dst = query.get("dst")
-            target = ori + dst + date 
+    for query in querys:
+        print (query.id)
+        date = query.get("date")
+        ori = query.get("ori")
+        dst = query.get("dst")
+        target = ori + dst + date 
 
-            print (target)
+        #print (target)
 
-            soup = getPageSource(ori,dst,date)
-            getData(soup,target,db)
+        soup = getPageSource(ori,dst,date)
+        getData(soup,target,db)
 
 if __name__ == '__main__': 
     db = initDatabase()
