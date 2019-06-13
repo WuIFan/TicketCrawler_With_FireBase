@@ -21,10 +21,10 @@ firebase (firestore)
 
 ### start
 
-## searchQuery()
+#### searchQuery()
 
 crawl webs for user's query  
 
-## checksub()
+#### checksub()
 
 update user's subscription if different from database  
