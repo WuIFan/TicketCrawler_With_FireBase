@@ -21,6 +21,7 @@ def getPageSource(ori,dst,date):
 
 def getData(soup,target,db):
     result = soup.find_all("div", class_ = "gws-flights-results__collapsed-itinerary gws-flights-results__itinerary")
+    print ("Get...")
     for plan in result :
         data = {}
         try:
@@ -38,10 +39,11 @@ def getData(soup,target,db):
                 'date' : target["date"]
             }
             
-            print(data)
             addDatabase(data,db)
-        except IndexError:
+        except IndexError as e:
+            # print (e)
             continue
+    print ("Done...")
 
 def addDatabase(data,db):
     path = "searchResult/" + data['target'] + "/tickets"
@@ -72,7 +74,7 @@ def getPrice(plan):
     price = plan.select("div.gws-flights-results__price")[0].text
     return price
 def getImg(plan):
-    img = plan.find('img')['src']
+    img = "http:" + plan.find('img')['src']
     return img
 
 def initDatabase():
@@ -113,19 +115,23 @@ def checkSub():
             print(oldData.id)
             # print(data)
 
+def testCrawl():
+    ori = "TPE"
+    dst = "KUL"
+    date = "2019-07-01"
+    target = {
+            "id" : ori + dst + date,
+            "ori" : ori,
+            "dst" : dst,
+            "date" : date
+    }
+    soup = getPageSource(ori,dst,date)
+    getData(soup,target,db)
 
 if __name__ == '__main__':
     db = initDatabase()
-    # ori = "TPE"
-    # dst = "KUL"
-    # date = "2019-07-01"
-    # target = {
-    #         "id" : ori + dst + date,
-    #         "ori" : ori,
-    #         "dst" : dst,
-    #         "date" : date
-    # }
-    # soup = getPageSource(ori,dst,date)
-    # getData(soup,target,db)
+    
+    # testCrawl()
+
     searchQuery()
     checkSub()
